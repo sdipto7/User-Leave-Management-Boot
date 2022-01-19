@@ -1,5 +1,7 @@
 package net.therap.leavemanagement.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
  * @author rumi.dipto
  * @since 11/22/21
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "lm_user_management")
 @NamedQueries({
@@ -51,20 +55,4 @@ public class UserManagement extends Persistent {
     @JoinColumn(name = "team_lead_id")
     @NotNull
     private User teamLead;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getTeamLead() {
-        return teamLead;
-    }
-
-    public void setTeamLead(User teamLead) {
-        this.teamLead = teamLead;
-    }
 }

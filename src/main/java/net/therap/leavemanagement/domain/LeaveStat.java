@@ -1,5 +1,7 @@
 package net.therap.leavemanagement.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
  * @author rumi.dipto
  * @since 11/22/21
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "lm_leave_stat")
 @NamedQueries({
@@ -31,28 +35,4 @@ public class LeaveStat extends Persistent {
 
     @Column(name = "casual_leave_count")
     private int casualLeaveCount;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public int getSickLeaveCount() {
-        return sickLeaveCount;
-    }
-
-    public void setSickLeaveCount(int sickLeaveCount) {
-        this.sickLeaveCount = sickLeaveCount;
-    }
-
-    public int getCasualLeaveCount() {
-        return casualLeaveCount;
-    }
-
-    public void setCasualLeaveCount(int casualLeaveCount) {
-        this.casualLeaveCount = casualLeaveCount;
-    }
 }

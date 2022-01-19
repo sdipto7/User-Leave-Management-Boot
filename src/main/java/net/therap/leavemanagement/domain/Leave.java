@@ -1,5 +1,7 @@
 package net.therap.leavemanagement.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -14,6 +16,8 @@ import static net.therap.leavemanagement.domain.LeaveStatus.*;
  * @author rumi.dipto
  * @since 11/22/21
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "lm_leave_request")
 @NamedQueries({
@@ -111,54 +115,6 @@ public class Leave extends Persistent {
     @Column(name = "end_date")
     @NotNull
     private Date endDate;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LeaveType getLeaveType() {
-        return leaveType;
-    }
-
-    public void setLeaveType(LeaveType leaveType) {
-        this.leaveType = leaveType;
-    }
-
-    public LeaveStatus getLeaveStatus() {
-        return leaveStatus;
-    }
-
-    public void setLeaveStatus(LeaveStatus leaveStatus) {
-        this.leaveStatus = leaveStatus;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 
     public boolean isPendingByHrExecutive() {
         return this.leaveStatus.equals(PENDING_BY_HR_EXECUTIVE);

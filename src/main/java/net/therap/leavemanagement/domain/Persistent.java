@@ -1,5 +1,8 @@
 package net.therap.leavemanagement.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,6 +12,8 @@ import java.util.Objects;
  * @author rumi.dipto
  * @since 11/22/21
  */
+@Getter
+@Setter
 @MappedSuperclass
 public class Persistent implements Serializable {
 
@@ -35,40 +40,8 @@ public class Persistent implements Serializable {
         updated = new Date();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     public boolean isNew() {
-        return getId() == 0;
+        return this.getId() == 0;
     }
 
     @Override

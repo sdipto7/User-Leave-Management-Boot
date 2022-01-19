@@ -1,5 +1,7 @@
 package net.therap.leavemanagement.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -11,6 +13,8 @@ import javax.validation.constraints.Size;
  * @author rumi.dipto
  * @since 12/12/21
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "lm_notification")
 @NamedQueries({
@@ -36,28 +40,4 @@ public class Notification extends Persistent {
 
     @NotNull
     private boolean seen;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public boolean isSeen() {
-        return seen;
-    }
-
-    public void setSeen(boolean seen) {
-        this.seen = seen;
-    }
 }
