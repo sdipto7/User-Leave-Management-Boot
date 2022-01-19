@@ -20,7 +20,7 @@ public class FilterConfiguration {
         FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ExceptionFilter());
         registrationBean.addUrlPatterns("/*");
-        
+
         return registrationBean;
     }
 
