@@ -15,18 +15,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfiguration {
 
+    private final String[] invalidSessionFilterUrlPatterns = {"/dashboard", "/user/*", "/notification",
+            "/leave/*", "/logout", "/success"};
+
+    private final String[] validSessionFilterUrlPatterns = {"/", "/login"};
+
+    private final String[] userActivationFilterUrlPatterns = {"/dashboard", "/user/teamLeadList",
+            "/user/developerList", "/user/testerList", "/user/details", "/user/form", "/user/submit",
+            "/notification", "/leave/*", "/logout", "/success"};
+
+    private final String[] exceptionUrlPatterns = {"/*"};
+
     @Bean
     public FilterRegistrationBean<InvalidSessionFilter> invalidSessionFilter() {
         FilterRegistrationBean<InvalidSessionFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new InvalidSessionFilter());
-        registrationBean.addUrlPatterns(
-                "/dashboard",
-                "/user/*",
-                "/notification",
-                "/leave/*",
-                "/logout",
-                "/success"
-        );
+        registrationBean.addUrlPatterns(invalidSessionFilterUrlPatterns);
+        registrationBean.setOrder(1);
 
         return registrationBean;
     }
@@ -35,7 +40,8 @@ public class FilterConfiguration {
     public FilterRegistrationBean<ValidSessionFilter> validSessionFilter() {
         FilterRegistrationBean<ValidSessionFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ValidSessionFilter());
-        registrationBean.addUrlPatterns("/", "/login");
+        registrationBean.addUrlPatterns(validSessionFilterUrlPatterns);
+        registrationBean.setOrder(2);
 
         return registrationBean;
     }
@@ -44,19 +50,8 @@ public class FilterConfiguration {
     public FilterRegistrationBean<UserActivationFilter> userActivationFilter() {
         FilterRegistrationBean<UserActivationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new UserActivationFilter());
-        registrationBean.addUrlPatterns(
-                "/dashboard",
-                "/user/teamLeadList",
-                "/user/developerList",
-                "/user/testerList",
-                "/user/details",
-                "/user/form",
-                "/user/submit",
-                "/notification",
-                "/leave/*",
-                "/logout",
-                "/success"
-        );
+        registrationBean.addUrlPatterns(userActivationFilterUrlPatterns);
+        registrationBean.setOrder(3);
 
         return registrationBean;
     }
@@ -65,7 +60,8 @@ public class FilterConfiguration {
     public FilterRegistrationBean<ExceptionFilter> exceptionFilter() {
         FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ExceptionFilter());
-        registrationBean.addUrlPatterns("/*");
+        registrationBean.addUrlPatterns(exceptionUrlPatterns);
+        registrationBean.setOrder(4);
 
         return registrationBean;
     }
