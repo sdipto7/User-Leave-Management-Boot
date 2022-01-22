@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class LeaveStatDao {
 
-    @PersistenceContext(unitName = Constant.PERSISTENCE_UNIT)
+    @PersistenceContext
     private EntityManager em;
 
     public LeaveStat findLeaveStatByUserId(long userId) {

@@ -18,7 +18,7 @@ import static net.therap.leavemanagement.util.Constant.pageSize;
 @Repository
 public class LeaveDao {
 
-    @PersistenceContext(unitName = Constant.PERSISTENCE_UNIT)
+    @PersistenceContext
     private EntityManager em;
 
     public Leave find(long id) {

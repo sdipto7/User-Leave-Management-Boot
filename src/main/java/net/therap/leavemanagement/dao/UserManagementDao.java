@@ -19,7 +19,7 @@ import static net.therap.leavemanagement.util.Constant.pageSize;
 @Repository
 public class UserManagementDao {
 
-    @PersistenceContext(unitName = Constant.PERSISTENCE_UNIT)
+    @PersistenceContext
     private EntityManager em;
 
     public List<UserManagement> findAllUserManagementByTeamLeadId(long teamLeadId) {
