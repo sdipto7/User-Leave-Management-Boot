@@ -16,10 +16,26 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfiguration {
 
     @Bean
-    public FilterRegistrationBean<ExceptionFilter> exceptionFilter() {
-        FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new ExceptionFilter());
-        registrationBean.addUrlPatterns("/*");
+    public FilterRegistrationBean<InvalidSessionFilter> invalidSessionFilter() {
+        FilterRegistrationBean<InvalidSessionFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new InvalidSessionFilter());
+        registrationBean.addUrlPatterns(
+                "/dashboard",
+                "/user/*",
+                "/notification",
+                "/leave/*",
+                "/logout",
+                "/success"
+        );
+
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<ValidSessionFilter> validSessionFilter() {
+        FilterRegistrationBean<ValidSessionFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new ValidSessionFilter());
+        registrationBean.addUrlPatterns("/", "/login");
 
         return registrationBean;
     }
@@ -46,26 +62,10 @@ public class FilterConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean<InvalidSessionFilter> invalidSessionFilter() {
-        FilterRegistrationBean<InvalidSessionFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new InvalidSessionFilter());
-        registrationBean.addUrlPatterns(
-                "/dashboard",
-                "/user/*",
-                "/notification",
-                "/leave/*",
-                "/logout",
-                "/success"
-        );
-
-        return registrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<ValidSessionFilter> validSessionFilter() {
-        FilterRegistrationBean<ValidSessionFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new ValidSessionFilter());
-        registrationBean.addUrlPatterns("/", "/login");
+    public FilterRegistrationBean<ExceptionFilter> exceptionFilter() {
+        FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new ExceptionFilter());
+        registrationBean.addUrlPatterns("/*");
 
         return registrationBean;
     }
