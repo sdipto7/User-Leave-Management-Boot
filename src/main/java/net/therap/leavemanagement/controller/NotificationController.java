@@ -32,7 +32,7 @@ public class NotificationController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String showNotification(@RequestParam(value = "userId") long userId, ModelMap modelMap) {
-        User user = userService.find(userId);
+        User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
         notificationHelper.setupNotificationData(user, modelMap);

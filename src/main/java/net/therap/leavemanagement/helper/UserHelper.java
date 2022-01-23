@@ -13,7 +13,7 @@ import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
-import static net.therap.leavemanagement.util.Constant.pageSize;
+import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
  * @author rumi.dipto
@@ -44,11 +44,11 @@ public class UserHelper {
     }
 
     public int getTotalPageNumber(int listSize) {
-        return ((listSize % pageSize == 0) ? (listSize / pageSize) : (listSize / pageSize) + 1);
+        return ((listSize % PAGE_SIZE == 0) ? (listSize / PAGE_SIZE) : (listSize / PAGE_SIZE) + 1);
     }
 
     public User getOrCreateUser(long id) {
-        return id == 0 ? new User() : userService.find(id);
+        return id == 0 ? new User() : userService.findById(id);
     }
 
     public void checkAndAddAuthorizedTeamLeadIfExist(User user, HttpSession session, ModelMap modelMap) {

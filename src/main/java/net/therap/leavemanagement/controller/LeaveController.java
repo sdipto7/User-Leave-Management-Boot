@@ -122,7 +122,7 @@ public class LeaveController {
                                             @RequestParam(value = "page", defaultValue = "1") Integer page,
                                             ModelMap modelMap) {
 
-        User user = userService.find(userId);
+        User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
         List<Leave> proceededLeavesOfUser = leaveService.findProceededLeavesOfUser(userId, page);
@@ -139,7 +139,7 @@ public class LeaveController {
                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                           ModelMap modelMap) {
 
-        User user = userService.find(userId);
+        User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
         List<Leave> pendingLeavesOfUser = leaveService.findPendingLeavesOfUser(userId, page);
@@ -170,7 +170,7 @@ public class LeaveController {
     public String showForm(@RequestParam(value = "userId") long userId,
                            ModelMap modelMap) {
 
-        User user = userService.find(userId);
+        User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
         Leave leave = leaveHelper.getLeaveByUserDesignation(user);

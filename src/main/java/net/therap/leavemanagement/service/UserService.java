@@ -1,9 +1,10 @@
 package net.therap.leavemanagement.service;
 
-import net.therap.leavemanagement.dao.UserDao;
+import net.therap.leavemanagement.dao.UserRepo;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.util.HashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ import java.util.Objects;
 public class UserService {
 
     @Autowired
-    private UserDao userDao;
+    private UserRepo userRepo;
 
     @Autowired
     private UserManagementService userManagementService;
@@ -32,36 +33,36 @@ public class UserService {
     @Autowired
     private NotificationService notificationService;
 
-    public User find(long id) {
-        return userDao.find(id);
+    public User findById(long id) {
+        return userRepo.findById(id);
     }
 
     public User findHrExecutive() {
-        return userDao.findHrExecutive();
+        return userRepo.findHrExecutive();
     }
 
     public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+        return userRepo.findByUsername(username);
     }
 
     public List<User> findAllTeamLead() {
-        return userDao.findAllTeamLead();
+        return userRepo.findAllTeamLead();
     }
 
-    public List<User> findAllTeamLead(int page) {
-        return userDao.findAllTeamLead(page);
+    public List<User> findAllTeamLead(Pageable pageable) {
+        return userRepo.findAllTeamLead(pageable);
     }
 
     public long countTeamLead() {
-        return userDao.countTeamLead();
+        return userRepo.countTeamLead();
     }
 
-    public List<User> findAllDeveloper(User sessionUser, int page) {
+    public List<User> findAllDeveloper(User sessionUser, Pageable pageable) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userDao.findAllDeveloper(page);
+                return userRepo.findAllDeveloper(pageable);
             case TEAM_LEAD:
-                return userManagementService.findAllDeveloperUnderTeamLead(sessionUser.getId(), page);
+                return userManagementService.findAllDeveloperUnderTeamLead(sessionUser.getId(), pageable);
             default:
                 return null;
         }
@@ -70,7 +71,7 @@ public class UserService {
     public long countDeveloper(User sessionUser) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userDao.countDeveloper();
+                return userRepo.countDeveloper();
             case TEAM_LEAD:
                 return userManagementService.countDeveloperUnderTeamLead(sessionUser.getId());
             default:
@@ -78,12 +79,12 @@ public class UserService {
         }
     }
 
-    public List<User> findAllTester(User sessionUser, int page) {
+    public List<User> findAllTester(User sessionUser, Pageable pageable) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userDao.findAllTester(page);
+                return userRepo.findAllTester(pageable);
             case TEAM_LEAD:
-                return userManagementService.findAllTesterUnderTeamLead(sessionUser.getId(), page);
+                return userManagementService.findAllTesterUnderTeamLead(sessionUser.getId(), pageable);
             default:
                 return null;
         }
@@ -92,20 +93,12 @@ public class UserService {
     public long countTester(User sessionUser) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userDao.countTester();
+                return userRepo.countTester();
             case TEAM_LEAD:
                 return userManagementService.countTesterUnderTeamLead(sessionUser.getId());
             default:
                 return 0;
         }
-    }
-
-    public List<User> findAll(int page) {
-        return userDao.findAll(page);
-    }
-
-    public Long countAll() {
-        return userDao.countAll();
     }
 
     @Transactional
@@ -114,7 +107,7 @@ public class UserService {
             user.setPassword(HashGenerator.getMd5(user.getPassword()));
             user.setActivated(false);
 
-            userDao.saveOrUpdate(user);
+            userRepo.save(user);
             userManagementService.createAndSaveWithNewUser(user, teamLead);
             leaveStatService.createAndSaveWithNewUser(user);
         } else {
@@ -126,7 +119,7 @@ public class UserService {
                 userManagementService.updateTeamLeadWithUserUpdate(user, teamLead);
             }
 
-            userDao.saveOrUpdate(user);
+            userRepo.save(user);
         }
     }
 
@@ -135,7 +128,7 @@ public class UserService {
         if (!user.isActivated()) {
             user.setActivated(true);
         }
-        userDao.saveOrUpdate(user);
+        userRepo.save(user);
     }
 
     @Transactional
@@ -148,14 +141,14 @@ public class UserService {
 
         userManagementService.deleteByUser(user);
 
-        userDao.delete(user);
+        userRepo.delete(user);
     }
 
     public boolean isDesignationChanged(User commandUser) {
         long id = commandUser.getId();
 
         if (id != 0) {
-            User dbUser = userDao.find(id);
+            User dbUser = userRepo.findById(id);
             return (commandUser.isTeamLead() && ((dbUser.isDeveloper()) || (dbUser.isTester())));
         }
 

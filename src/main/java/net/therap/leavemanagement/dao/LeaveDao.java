@@ -1,7 +1,6 @@
 package net.therap.leavemanagement.dao;
 
 import net.therap.leavemanagement.domain.Leave;
-import net.therap.leavemanagement.util.Constant;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-import static net.therap.leavemanagement.util.Constant.pageSize;
+import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
  * @author rumi.dipto
@@ -40,8 +39,8 @@ public class LeaveDao {
     public List<Leave> findProceededLeavesOfUser(long userId, int page) {
         return em.createNamedQuery("Leave.findProceededLeavesOfUser", Leave.class)
                 .setParameter("userId", userId)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 
@@ -54,38 +53,38 @@ public class LeaveDao {
     public List<Leave> findPendingLeavesOfUser(long userId, int page) {
         return em.createNamedQuery("Leave.findPendingLeavesOfUser", Leave.class)
                 .setParameter("userId", userId)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 
     public List<Leave> findAllProceededLeavesUnderTeamLead(long teamLeadId, int page) {
         return em.createNamedQuery("Leave.findAllProceededLeavesUnderTeamLead", Leave.class)
                 .setParameter("teamLeadId", teamLeadId)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 
     public List<Leave> findAllPendingLeavesUnderTeamLead(long teamLeadId, int page) {
         return em.createNamedQuery("Leave.findAllPendingLeavesUnderTeamLead", Leave.class)
                 .setParameter("teamLeadId", teamLeadId)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 
     public List<Leave> findAllProceededLeaves(int page) {
         return em.createNamedQuery("Leave.findAllProceededLeaves", Leave.class)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 
     public List<Leave> findAllPendingLeaves(int page) {
         return em.createNamedQuery("Leave.findAllPendingLeaves", Leave.class)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE)
                 .getResultList();
     }
 

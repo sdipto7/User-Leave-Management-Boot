@@ -20,37 +20,6 @@ import static net.therap.leavemanagement.domain.Designation.*;
 @Setter
 @Entity
 @Table(name = "lm_user")
-@NamedQueries({
-        @NamedQuery(name = "User.findHrExecutive",
-                query = "SELECT u FROM User u WHERE u.designation = 'HR_EXECUTIVE'"),
-
-        @NamedQuery(name = "User.findByUsername",
-                query = "SELECT u FROM User u WHERE u.username = :username"),
-
-        @NamedQuery(name = "User.findAllTeamLead",
-                query = "SELECT u FROM User u WHERE u.designation = 'TEAM_LEAD' ORDER BY u.id ASC"),
-
-        @NamedQuery(name = "User.findAllDeveloper",
-                query = "SELECT u FROM User u WHERE u.designation = 'DEVELOPER' ORDER BY u.id ASC"),
-
-        @NamedQuery(name = "User.findAllTester",
-                query = "SELECT u FROM User u WHERE u.designation = 'TESTER' ORDER BY u.id ASC"),
-
-        @NamedQuery(name = "User.findAll",
-                query = "SELECT u FROM User u ORDER BY u.id ASC"),
-
-        @NamedQuery(name = "User.countTeamLead",
-                query = "SELECT COUNT(u) FROM User u WHERE u.designation = 'TEAM_LEAD'"),
-
-        @NamedQuery(name = "User.countDeveloper",
-                query = "SELECT COUNT(u) FROM User u WHERE u.designation = 'DEVELOPER'"),
-
-        @NamedQuery(name = "User.countTester",
-                query = "SELECT COUNT(u) FROM User u WHERE u.designation = 'TESTER'"),
-
-        @NamedQuery(name = "User.countAll",
-                query = "SELECT COUNT(u) FROM User u")
-})
 public class User extends Persistent {
 
     private static final long serialVersionUID = 1L;

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,7 @@ import java.util.List;
 import static net.therap.leavemanagement.controller.UserController.*;
 import static net.therap.leavemanagement.domain.Designation.HR_EXECUTIVE;
 import static net.therap.leavemanagement.domain.Designation.TEAM_LEAD;
+import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
  * @author rumi.dipto
@@ -97,7 +99,8 @@ public class UserController {
     private String showProfile(@RequestParam(value = "id") long id,
                                ModelMap modelMap) {
 
-        User user = userService.find(id);
+        User user = userService.findById(id);
+
         authorizationHelper.checkAccess(user);
 
         UserProfileCommand userProfileCommand = new UserProfileCommand();
@@ -115,7 +118,7 @@ public class UserController {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE);
 
-        List<User> teamLeadList = userService.findAllTeamLead(page);
+        List<User> teamLeadList = userService.findAllTeamLead(PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", teamLeadList);
         modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTeamLead()));
@@ -132,7 +135,7 @@ public class UserController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<User> developerList = userService.findAllDeveloper(sessionUser, page);
+        List<User> developerList = userService.findAllDeveloper(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", developerList);
         modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countDeveloper(sessionUser)));
@@ -149,7 +152,7 @@ public class UserController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<User> testerList = userService.findAllTester(sessionUser, page);
+        List<User> testerList = userService.findAllTester(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", testerList);
         modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTester(sessionUser)));
@@ -164,7 +167,7 @@ public class UserController {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE, TEAM_LEAD);
 
-        User user = userService.find(id);
+        User user = userService.findById(id);
         LeaveStat leaveStat = leaveStatService.findLeaveStatByUserId(id);
 
         userHelper.checkAndAddAuthorizedTeamLeadIfExist(user, session, modelMap);

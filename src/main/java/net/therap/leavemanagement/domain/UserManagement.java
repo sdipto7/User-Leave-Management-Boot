@@ -16,30 +16,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Entity
 @Table(name = "lm_user_management")
-@NamedQueries({
-        @NamedQuery(name = "UserManagement.findUserManagementByUserId",
-                query = "SELECT um FROM UserManagement um WHERE um.user.id = :userId"),
-
-        @NamedQuery(name = "UserManagement.findAllUserManagementByTeamLeadId",
-                query = "SELECT um FROM UserManagement um WHERE um.teamLead.id = :teamLeadId"),
-
-        @NamedQuery(name = "UserManagement.findTeamLead",
-                query = "SELECT um.teamLead FROM UserManagement um WHERE um.user.id = :id"),
-
-        @NamedQuery(name = "UserManagement.findAllDeveloperUnderTeamLead",
-                query = "SELECT um.user FROM UserManagement um " +
-                        "WHERE um.teamLead.id = :id AND um.user.designation = 'DEVELOPER' ORDER BY um.id"),
-
-        @NamedQuery(name = "UserManagement.findAllTesterUnderTeamLead",
-                query = "SELECT um.user FROM UserManagement um " +
-                        "WHERE um.teamLead.id = :id AND um.user.designation = 'TESTER' ORDER BY um.id"),
-
-        @NamedQuery(name = "UserManagement.countDeveloperUnderTeamLead",
-                query = "SELECT COUNT(um) FROM UserManagement um WHERE um.teamLead.id = :id AND um.user.designation = 'DEVELOPER'"),
-
-        @NamedQuery(name = "UserManagement.countTesterUnderTeamLead",
-                query = "SELECT COUNT(um) FROM UserManagement um WHERE um.teamLead.id = :id AND um.user.designation = 'TESTER'")
-})
 public class UserManagement extends Persistent {
 
     private static final long serialVersionUID = 1L;

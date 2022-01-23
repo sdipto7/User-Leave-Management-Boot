@@ -1,9 +1,10 @@
 package net.therap.leavemanagement.service;
 
-import net.therap.leavemanagement.dao.UserManagementDao;
+import net.therap.leavemanagement.dao.UserManagementRepo;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.domain.UserManagement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,47 +19,39 @@ import java.util.Objects;
 public class UserManagementService {
 
     @Autowired
-    private UserManagementDao userManagementDao;
+    private UserManagementRepo userManagementRepo;
 
-    public List<UserManagement> findAllUserManagementByTeamLeadId(long teamLeadId) {
-        return userManagementDao.findAllUserManagementByTeamLeadId(teamLeadId);
+    public User findTeamLeadByUserId(long userId) {
+        return userManagementRepo.findTeamLeadByUserId(userId);
     }
 
-    public UserManagement findUserManagementByUserId(long userId) {
-        return userManagementDao.findUserManagementByUserId(userId);
+    public List<User> findAllDeveloperUnderTeamLead(long teamLeadId) {
+        return userManagementRepo.findAllDeveloperUnderTeamLead(teamLeadId);
     }
 
-    public User findTeamLeadByUserId(long id) {
-        return userManagementDao.findTeamLeadByUserId(id);
+    public List<User> findAllDeveloperUnderTeamLead(long teamLeadId, Pageable pageable) {
+        return userManagementRepo.findAllDeveloperUnderTeamLead(teamLeadId, pageable);
     }
 
-    public List<User> findAllDeveloperUnderTeamLead(long id) {
-        return userManagementDao.findAllDeveloperUnderTeamLead(id);
+    public long countDeveloperUnderTeamLead(long teamLeadId) {
+        return userManagementRepo.countDeveloperUnderTeamLead(teamLeadId);
     }
 
-    public List<User> findAllDeveloperUnderTeamLead(long id, int page) {
-        return userManagementDao.findAllDeveloperUnderTeamLead(id, page);
+    public List<User> findAllTesterUnderTeamLead(long teamLeadId) {
+        return userManagementRepo.findAllTesterUnderTeamLead(teamLeadId);
     }
 
-    public long countDeveloperUnderTeamLead(long id) {
-        return userManagementDao.countDeveloperUnderTeamLead(id);
+    public List<User> findAllTesterUnderTeamLead(long teamLeadId, Pageable pageable) {
+        return userManagementRepo.findAllTesterUnderTeamLead(teamLeadId, pageable);
     }
 
-    public List<User> findAllTesterUnderTeamLead(long id) {
-        return userManagementDao.findAllTesterUnderTeamLead(id);
-    }
-
-    public List<User> findAllTesterUnderTeamLead(long id, int page) {
-        return userManagementDao.findAllTesterUnderTeamLead(id, page);
-    }
-
-    public long countTesterUnderTeamLead(long id) {
-        return userManagementDao.countTesterUnderTeamLead(id);
+    public long countTesterUnderTeamLead(long teamLeadId) {
+        return userManagementRepo.countTesterUnderTeamLead(teamLeadId);
     }
 
     @Transactional
     public void saveOrUpdate(UserManagement userManagement) {
-        userManagementDao.saveOrUpdate(userManagement);
+        userManagementRepo.save(userManagement);
     }
 
     @Transactional
@@ -68,21 +61,26 @@ public class UserManagementService {
             userManagement.setUser(user);
             userManagement.setTeamLead(teamLead);
 
-            userManagementDao.saveOrUpdate(userManagement);
+            userManagementRepo.save(userManagement);
         }
     }
 
     @Transactional
     public void updateTeamLeadWithUserUpdate(User user, User teamLead) {
-        UserManagement userManagement = userManagementDao.findUserManagementByUserId(user.getId());
+        UserManagement userManagement = userManagementRepo.findByUserId(user.getId());
+
+        if (Objects.isNull(userManagement)) {
+            userManagement = new UserManagement();
+            userManagement.setUser(user);
+        }
         userManagement.setTeamLead(teamLead);
 
-        userManagementDao.saveOrUpdate(userManagement);
+        userManagementRepo.save(userManagement);
     }
 
     @Transactional
     public void delete(UserManagement userManagement) {
-        userManagementDao.delete(userManagement);
+        userManagementRepo.delete(userManagement);
     }
 
     @Transactional
@@ -90,22 +88,22 @@ public class UserManagementService {
         long userId = user.getId();
 
         if (user.isTeamLead()) {
-            List<UserManagement> userManagementList = userManagementDao.findAllUserManagementByTeamLeadId(userId);
+            List<UserManagement> userManagementList = userManagementRepo.findAllByTeamLeadId(userId);
             if (userManagementList.size() > 0) {
-                userManagementList.forEach(userManagement -> userManagementDao.delete(userManagement));
+                userManagementList.forEach(userManagement -> userManagementRepo.delete(userManagement));
             }
         } else if (user.isDeveloper() || user.isTester()) {
-            UserManagement userManagement = userManagementDao.findUserManagementByUserId(userId);
+            UserManagement userManagement = userManagementRepo.findByUserId(userId);
             if (Objects.nonNull(userManagement)) {
-                userManagementDao.delete(userManagement);
+                userManagementRepo.delete(userManagement);
             }
         }
     }
 
     @Transactional
     public void deleteWithUserDesignationUpdate(User user) {
-        UserManagement userManagement = userManagementDao.findUserManagementByUserId(user.getId());
-        userManagementDao.delete(userManagement);
+        UserManagement userManagement = userManagementRepo.findByUserId(user.getId());
+        userManagementRepo.delete(userManagement);
     }
 
     public boolean canHaveTeamLead(User user, User teamLead) {

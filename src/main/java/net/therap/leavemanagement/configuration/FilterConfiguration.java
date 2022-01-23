@@ -55,14 +55,14 @@ public class FilterConfiguration {
 
         return registrationBean;
     }
-
-    @Bean
-    public FilterRegistrationBean<ExceptionFilter> exceptionFilter() {
-        FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new ExceptionFilter());
-        registrationBean.addUrlPatterns(exceptionUrlPatterns);
-        registrationBean.setOrder(4);
-
-        return registrationBean;
-    }
+//
+//    @Bean
+//    public FilterRegistrationBean<ExceptionFilter> exceptionFilter() {
+//        FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new ExceptionFilter());
+//        registrationBean.addUrlPatterns(exceptionUrlPatterns);
+//        registrationBean.setOrder(4);
+//
+//        return registrationBean;
+//    }
 }

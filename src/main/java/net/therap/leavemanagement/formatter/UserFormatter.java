@@ -21,7 +21,7 @@ public class UserFormatter implements Formatter<User> {
 
     @Override
     public User parse(String idText, Locale locale) throws ParseException {
-        return userService.find(Integer.parseInt(idText));
+        return userService.findById(Integer.parseInt(idText));
     }
 
     @Override
