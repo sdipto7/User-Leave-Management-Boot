@@ -1,6 +1,7 @@
 package net.therap.leavemanagement.configuration;
 
 import net.therap.leavemanagement.formatter.UserFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -17,6 +18,9 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
+
+    @Autowired
+    private UserFormatter userFormatter;
 
     @Bean
     public ViewResolver getViewResolver() {
@@ -35,6 +39,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addFormatter(new UserFormatter());
+        registry.addFormatter(userFormatter);
     }
 }
