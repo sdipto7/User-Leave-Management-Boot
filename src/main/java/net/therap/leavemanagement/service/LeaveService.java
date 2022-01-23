@@ -1,9 +1,10 @@
 package net.therap.leavemanagement.service;
 
-import net.therap.leavemanagement.dao.LeaveDao;
+import net.therap.leavemanagement.dao.LeaveRepo;
 import net.therap.leavemanagement.domain.Leave;
 import net.therap.leavemanagement.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,63 +20,63 @@ import static net.therap.leavemanagement.domain.LeaveStatus.PENDING_BY_HR_EXECUT
 public class LeaveService {
 
     @Autowired
-    private LeaveDao leaveDao;
+    private LeaveRepo leaveRepo;
 
     @Autowired
     private LeaveStatService leaveStatService;
 
     public Leave find(long id) {
-        return leaveDao.find(id);
+        return leaveRepo.findById(id);
     }
 
-    public List<Leave> findProceededLeavesOfUser(long userId, int page) {
-        return leaveDao.findProceededLeavesOfUser(userId, page);
+    public List<Leave> findProceededLeavesOfUser(long userId, Pageable pageable) {
+        return leaveRepo.findProceededLeavesOfUser(userId, pageable);
     }
 
     public List<Leave> findPendingLeavesOfUser(long userId) {
-        return leaveDao.findPendingLeavesOfUser(userId);
+        return leaveRepo.findPendingLeavesOfUser(userId);
     }
 
-    public List<Leave> findPendingLeavesOfUser(long userId, int page) {
-        return leaveDao.findPendingLeavesOfUser(userId, page);
+    public List<Leave> findPendingLeavesOfUser(long userId, Pageable pageable) {
+        return leaveRepo.findPendingLeavesOfUser(userId, pageable);
     }
 
-    public List<Leave> findAllProceededLeaves(User sessionUser, int page) {
+    public List<Leave> findAllProceededLeaves(User sessionUser, Pageable pageable) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return leaveDao.findAllProceededLeaves(page);
+                return leaveRepo.findAllProceededLeaves(pageable);
             case TEAM_LEAD:
-                return leaveDao.findAllProceededLeavesUnderTeamLead(sessionUser.getId(), page);
+                return leaveRepo.findAllProceededLeavesUnderTeamLead(sessionUser.getId(), pageable);
             default:
                 return null;
         }
     }
 
-    public List<Leave> findAllPendingLeaves(User sessionUser, int page) {
+    public List<Leave> findAllPendingLeaves(User sessionUser, Pageable pageable) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return leaveDao.findAllPendingLeaves(page);
+                return leaveRepo.findAllPendingLeaves(pageable);
             case TEAM_LEAD:
-                return leaveDao.findAllPendingLeavesUnderTeamLead(sessionUser.getId(), page);
+                return leaveRepo.findAllPendingLeavesUnderTeamLead(sessionUser.getId(), pageable);
             default:
                 return null;
         }
     }
 
     public long countProceededLeavesOfUser(long userId) {
-        return leaveDao.countProceededLeavesOfUser(userId);
+        return leaveRepo.countProceededLeavesOfUser(userId);
     }
 
     public long countPendingLeavesOfUser(long userId) {
-        return leaveDao.countPendingLeavesOfUser(userId);
+        return leaveRepo.countPendingLeavesOfUser(userId);
     }
 
     public long countAllProceededLeaves(User sessionUser) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return leaveDao.countAllProceededLeaves();
+                return leaveRepo.countAllProceededLeaves();
             case TEAM_LEAD:
-                return leaveDao.countAllProceededLeavesUnderTeamLead(sessionUser.getId());
+                return leaveRepo.countAllProceededLeavesUnderTeamLead(sessionUser.getId());
             default:
                 return 0;
         }
@@ -84,9 +85,9 @@ public class LeaveService {
     public long countAllPendingLeaves(User sessionUser) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return leaveDao.countAllPendingLeaves();
+                return leaveRepo.countAllPendingLeaves();
             case TEAM_LEAD:
-                return leaveDao.countAllPendingLeavesUnderTeamLead(sessionUser.getId());
+                return leaveRepo.countAllPendingLeavesUnderTeamLead(sessionUser.getId());
             default:
                 return 0;
         }
@@ -98,30 +99,30 @@ public class LeaveService {
             leaveStatService.updateByLeave(leave);
         }
 
-        leaveDao.saveOrUpdate(leave);
+        leaveRepo.save(leave);
     }
 
     @Transactional
     public void updateLeaveStatusWithUserDesignationUpdate(User user) {
-        List<Leave> pendingLeaveList = leaveDao.findPendingLeavesOfUser(user.getId());
+        List<Leave> pendingLeaveList = leaveRepo.findPendingLeavesOfUser(user.getId());
         for (Leave pendingLeave : pendingLeaveList) {
             if (pendingLeave.isPendingByTeamLead()) {
                 pendingLeave.setLeaveStatus(PENDING_BY_HR_EXECUTIVE);
-                leaveDao.saveOrUpdate(pendingLeave);
+                leaveRepo.save(pendingLeave);
             }
         }
     }
 
     @Transactional
     public void delete(Leave leave) {
-        leaveDao.delete(leave);
+        leaveRepo.delete(leave);
     }
 
     @Transactional
     public void deleteByUser(User user) {
-        List<Leave> leaveList = leaveDao.findAllLeavesOfUser(user.getId());
+        List<Leave> leaveList = leaveRepo.findAllLeavesOfUser(user.getId());
         if (leaveList.size() > 0) {
-            leaveList.forEach(leave -> leaveDao.delete(leave));
+            leaveList.forEach(leave -> leaveRepo.delete(leave));
         }
     }
 }

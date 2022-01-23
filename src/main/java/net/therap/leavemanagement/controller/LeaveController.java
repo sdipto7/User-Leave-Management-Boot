@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -32,6 +33,7 @@ import java.util.List;
 import static net.therap.leavemanagement.controller.LeaveController.LEAVE_COMMAND;
 import static net.therap.leavemanagement.domain.Designation.HR_EXECUTIVE;
 import static net.therap.leavemanagement.domain.Designation.TEAM_LEAD;
+import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
  * @author rumi.dipto
@@ -90,7 +92,7 @@ public class LeaveController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<Leave> allProceededLeaves = leaveService.findAllProceededLeaves(sessionUser, page);
+        List<Leave> allProceededLeaves = leaveService.findAllProceededLeaves(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("leaveList", allProceededLeaves);
         modelMap.addAttribute("pageNumber",
@@ -108,7 +110,7 @@ public class LeaveController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<Leave> allPendingLeaves = leaveService.findAllPendingLeaves(sessionUser, page);
+        List<Leave> allPendingLeaves = leaveService.findAllPendingLeaves(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("leaveList", allPendingLeaves);
         modelMap.addAttribute("pageNumber",
@@ -125,7 +127,7 @@ public class LeaveController {
         User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
-        List<Leave> proceededLeavesOfUser = leaveService.findProceededLeavesOfUser(userId, page);
+        List<Leave> proceededLeavesOfUser = leaveService.findProceededLeavesOfUser(userId, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("leaveList", proceededLeavesOfUser);
         modelMap.addAttribute("pageNumber",
@@ -142,7 +144,7 @@ public class LeaveController {
         User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
-        List<Leave> pendingLeavesOfUser = leaveService.findPendingLeavesOfUser(userId, page);
+        List<Leave> pendingLeavesOfUser = leaveService.findPendingLeavesOfUser(userId, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("leaveList", pendingLeavesOfUser);
         modelMap.addAttribute("pageNumber",
