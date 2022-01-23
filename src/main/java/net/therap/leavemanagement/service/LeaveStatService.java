@@ -1,6 +1,6 @@
 package net.therap.leavemanagement.service;
 
-import net.therap.leavemanagement.dao.LeaveStatDao;
+import net.therap.leavemanagement.dao.LeaveStatRepo;
 import net.therap.leavemanagement.domain.Leave;
 import net.therap.leavemanagement.domain.LeaveStat;
 import net.therap.leavemanagement.domain.LeaveType;
@@ -18,18 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class LeaveStatService {
 
     @Autowired
-    private LeaveStatDao leaveStatDao;
+    private LeaveStatRepo leaveStatRepo;
 
     public LeaveStat findLeaveStatByUserId(long userId) {
-        return leaveStatDao.findLeaveStatByUserId(userId);
-    }
-
-    @Transactional
-    public void saveOrUpdate(LeaveStat leaveStat) {
-        leaveStat.setSickLeaveCount(0);
-        leaveStat.setCasualLeaveCount(0);
-
-        leaveStatDao.saveOrUpdate(leaveStat);
+        return leaveStatRepo.findByUserId(userId);
     }
 
     @Transactional
@@ -37,12 +29,12 @@ public class LeaveStatService {
         LeaveStat leaveStat = new LeaveStat();
         leaveStat.setUser(user);
 
-        leaveStatDao.saveOrUpdate(leaveStat);
+        leaveStatRepo.save(leaveStat);
     }
 
     @Transactional
     public void updateByLeave(Leave leave) {
-        LeaveStat leaveStat = findLeaveStatByUserId(leave.getUser().getId());
+        LeaveStat leaveStat = leaveStatRepo.findByUserId(leave.getUser().getId());
         int dayCount = DateTimeUtil.getLeaveDayCount(leave.getStartDate(), leave.getEndDate());
 
         if (leave.getLeaveType().equals(LeaveType.CASUAL)) {
@@ -51,17 +43,12 @@ public class LeaveStatService {
             leaveStat.setSickLeaveCount(leaveStat.getSickLeaveCount() + dayCount);
         }
 
-        leaveStatDao.saveOrUpdate(leaveStat);
-    }
-
-    @Transactional
-    public void delete(LeaveStat leaveStat) {
-        leaveStatDao.delete(leaveStat);
+        leaveStatRepo.save(leaveStat);
     }
 
     @Transactional
     public void deleteByUser(User user) {
-        LeaveStat leaveStat = leaveStatDao.findLeaveStatByUserId(user.getId());
-        leaveStatDao.delete(leaveStat);
+        LeaveStat leaveStat = leaveStatRepo.findByUserId(user.getId());
+        leaveStatRepo.delete(leaveStat);
     }
 }
