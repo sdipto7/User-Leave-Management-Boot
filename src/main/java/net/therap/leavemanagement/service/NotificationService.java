@@ -1,6 +1,6 @@
 package net.therap.leavemanagement.service;
 
-import net.therap.leavemanagement.dao.NotificationDao;
+import net.therap.leavemanagement.dao.NotificationRepo;
 import net.therap.leavemanagement.domain.Notification;
 import net.therap.leavemanagement.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +17,22 @@ import java.util.List;
 public class NotificationService {
 
     @Autowired
-    private NotificationDao notificationDao;
+    private NotificationRepo notificationRepo;
 
     public List<Notification> findAllUnseenNotifications(long userId) {
-        return notificationDao.findAllUnseenNotifications(userId);
+        return notificationRepo.findAllUnseenNotifications(userId);
     }
 
     @Transactional
     public void saveOrUpdate(Notification notification) {
-        notificationDao.saveOrUpdate(notification);
+        notificationRepo.save(notification);
     }
 
     @Transactional
     public void deleteByUser(User user) {
-        List<Notification> notificationList = notificationDao.findAllNotifications(user.getId());
+        List<Notification> notificationList = notificationRepo.findAllByUserId(user.getId());
         if (notificationList.size() > 0) {
-            notificationList.forEach(notification -> notificationDao.delete(notification));
+            notificationList.forEach(notification -> notificationRepo.delete(notification));
         }
     }
 }
