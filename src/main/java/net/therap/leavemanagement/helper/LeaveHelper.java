@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import static net.therap.leavemanagement.domain.Designation.*;
 import static net.therap.leavemanagement.domain.LeaveStatus.*;
-import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
+import static net.therap.leavemanagement.util.Constant.ITEMS_PER_PAGE;
 
 /**
  * @author rumi.dipto
@@ -55,7 +55,7 @@ public class LeaveHelper {
     }
 
     public int getTotalPageNumber(int listSize) {
-        return ((listSize % PAGE_SIZE == 0) ? (listSize / PAGE_SIZE) : (listSize / PAGE_SIZE) + 1);
+        return ((listSize % ITEMS_PER_PAGE == 0) ? (listSize / ITEMS_PER_PAGE) : (listSize / ITEMS_PER_PAGE) + 1);
     }
 
     public Leave getLeaveByUserDesignation(User user) {

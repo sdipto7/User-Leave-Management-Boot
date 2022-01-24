@@ -16,6 +16,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -33,7 +34,7 @@ import java.util.List;
 import static net.therap.leavemanagement.controller.LeaveController.LEAVE_COMMAND;
 import static net.therap.leavemanagement.domain.Designation.HR_EXECUTIVE;
 import static net.therap.leavemanagement.domain.Designation.TEAM_LEAD;
-import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
+import static net.therap.leavemanagement.util.Constant.ITEMS_PER_PAGE;
 
 /**
  * @author rumi.dipto
@@ -85,36 +86,32 @@ public class LeaveController {
 
     @RequestMapping(value = "/leaveList", method = RequestMethod.GET)
     public String showAllProceededLeaves(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                         HttpSession session,
                                          ModelMap modelMap) {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE, TEAM_LEAD);
 
-        User sessionUser = (User) session.getAttribute("SESSION_USER");
-
-        List<Leave> allProceededLeaves = leaveService.findAllProceededLeaves(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<Leave> allProceededLeaves = leaveService.findAllProceededLeaves(pageable);
 
         modelMap.addAttribute("leaveList", allProceededLeaves);
         modelMap.addAttribute("pageNumber",
-                leaveHelper.getTotalPageNumber((int) leaveService.countAllProceededLeaves(sessionUser)));
+                leaveHelper.getTotalPageNumber((int) leaveService.countAllProceededLeaves()));
 
         return LEAVE_LIST_PAGE;
     }
 
     @RequestMapping(value = "/pendingLeaveList", method = RequestMethod.GET)
     public String showAllPendingLeaves(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                       HttpSession session,
                                        ModelMap modelMap) {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE, TEAM_LEAD);
 
-        User sessionUser = (User) session.getAttribute("SESSION_USER");
-
-        List<Leave> allPendingLeaves = leaveService.findAllPendingLeaves(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<Leave> allPendingLeaves = leaveService.findAllPendingLeaves(pageable);
 
         modelMap.addAttribute("leaveList", allPendingLeaves);
         modelMap.addAttribute("pageNumber",
-                leaveHelper.getTotalPageNumber((int) leaveService.countAllPendingLeaves(sessionUser)));
+                leaveHelper.getTotalPageNumber((int) leaveService.countAllPendingLeaves()));
 
         return LEAVE_LIST_PAGE;
     }
@@ -127,7 +124,8 @@ public class LeaveController {
         User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
-        List<Leave> proceededLeavesOfUser = leaveService.findProceededLeavesOfUser(userId, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<Leave> proceededLeavesOfUser = leaveService.findProceededLeavesOfUser(userId, pageable);
 
         modelMap.addAttribute("leaveList", proceededLeavesOfUser);
         modelMap.addAttribute("pageNumber",
@@ -144,7 +142,8 @@ public class LeaveController {
         User user = userService.findById(userId);
         authorizationHelper.checkAccess(user);
 
-        List<Leave> pendingLeavesOfUser = leaveService.findPendingLeavesOfUser(userId, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<Leave> pendingLeavesOfUser = leaveService.findPendingLeavesOfUser(userId, pageable);
 
         modelMap.addAttribute("leaveList", pendingLeavesOfUser);
         modelMap.addAttribute("pageNumber",

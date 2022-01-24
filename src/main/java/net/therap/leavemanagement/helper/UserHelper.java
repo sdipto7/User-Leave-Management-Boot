@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
 import static net.therap.leavemanagement.domain.Designation.*;
-import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
+import static net.therap.leavemanagement.util.Constant.ITEMS_PER_PAGE;
 
 /**
  * @author rumi.dipto
@@ -45,7 +45,7 @@ public class UserHelper {
     }
 
     public int getTotalPageNumber(int listSize) {
-        return ((listSize % PAGE_SIZE == 0) ? (listSize / PAGE_SIZE) : (listSize / PAGE_SIZE) + 1);
+        return ((listSize % ITEMS_PER_PAGE == 0) ? (listSize / ITEMS_PER_PAGE) : (listSize / ITEMS_PER_PAGE) + 1);
     }
 
     public User getOrCreateUser(long id) {
@@ -67,7 +67,7 @@ public class UserHelper {
     }
 
     public void setDataForUserSaveForm(ModelMap modelMap) {
-        modelMap.addAttribute("teamLeadList", userService.findAllTeamLead(TEAM_LEAD));
+        modelMap.addAttribute("teamLeadList", userService.findAllUserByDesignation(TEAM_LEAD));
         modelMap.addAttribute("designationList", Arrays.asList(Designation.values()));
     }
 

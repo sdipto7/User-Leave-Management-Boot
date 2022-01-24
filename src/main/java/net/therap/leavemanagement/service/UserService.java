@@ -4,13 +4,18 @@ import net.therap.leavemanagement.dao.UserRepo;
 import net.therap.leavemanagement.domain.Designation;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.util.HashGenerator;
+import net.therap.leavemanagement.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
 
 import java.util.List;
 import java.util.Objects;
+
+import static net.therap.leavemanagement.domain.Designation.DEVELOPER;
+import static net.therap.leavemanagement.domain.Designation.TESTER;
 
 /**
  * @author rumi.dipto
@@ -46,37 +51,31 @@ public class UserService {
         return userRepo.findByUsername(username);
     }
 
-    public List<User> findAllTeamLead(Designation designation) {
+    public List<User> findAllUserByDesignation(Designation designation) {
         return userRepo.findAllByDesignation(designation);
     }
 
-    public List<User> findAllTeamLead(Designation designation, Pageable pageable) {
-        return userRepo.findAllByDesignation(designation, pageable);
-    }
+    public List<User> findAllUserByDesignation(Designation designation, Pageable pageable) {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
 
-    public List<User> findAllUserByDesignation(User sessionUser, Designation designation, Pageable pageable) {
-        switch (sessionUser.getDesignation()) {
-            case HR_EXECUTIVE:
-                return userRepo.findAllByDesignation(designation, pageable);
-            case TEAM_LEAD:
-                return userManagementService.findAllUserByDesignationUnderTeamLead(sessionUser.getId(), designation, pageable);
-            default:
-                return null;
+        if (sessionUser.isHrExecutive()) {
+            return userRepo.findAllByDesignation(designation, pageable);
+        } else if (sessionUser.isTeamLead() && (designation.equals(DEVELOPER) || designation.equals(TESTER))) {
+            return userManagementService.findAllUserByDesignationUnderTeamLead(sessionUser.getId(), designation, pageable);
+        } else {
+            return null;
         }
     }
 
-    public long countTeamLead(Designation designation) {
-        return userRepo.countByDesignation(designation);
-    }
+    public long countUserByDesignation(Designation designation) {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
 
-    public long countUserByDesignation(User sessionUser, Designation designation) {
-        switch (sessionUser.getDesignation()) {
-            case HR_EXECUTIVE:
-                return userRepo.countByDesignation(designation);
-            case TEAM_LEAD:
-                return userManagementService.countUserByDesignationUnderTeamLead(sessionUser.getId(), designation);
-            default:
-                return 0;
+        if (sessionUser.isHrExecutive()) {
+            return userRepo.countByDesignation(designation);
+        } else if (sessionUser.isTeamLead() && (designation.equals(DEVELOPER) || designation.equals(TESTER))) {
+            return userManagementService.countUserByDesignationUnderTeamLead(sessionUser.getId(), designation);
+        } else {
+            return 0;
         }
     }
 

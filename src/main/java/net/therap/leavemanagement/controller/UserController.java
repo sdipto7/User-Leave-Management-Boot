@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -31,7 +32,7 @@ import java.util.List;
 
 import static net.therap.leavemanagement.controller.UserController.*;
 import static net.therap.leavemanagement.domain.Designation.*;
-import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
+import static net.therap.leavemanagement.util.Constant.ITEMS_PER_PAGE;
 
 /**
  * @author rumi.dipto
@@ -117,44 +118,44 @@ public class UserController {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE);
 
-        List<User> teamLeadList = userService.findAllTeamLead(TEAM_LEAD, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<User> teamLeadList = userService.findAllUserByDesignation(TEAM_LEAD, pageable);
 
         modelMap.addAttribute("userList", teamLeadList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTeamLead(TEAM_LEAD)));
+        modelMap.addAttribute("pageNumber",
+                userHelper.getTotalPageNumber((int) userService.countUserByDesignation(TEAM_LEAD)));
 
         return USER_LIST_PAGE;
     }
 
     @RequestMapping(value = "/developerList", method = RequestMethod.GET)
     public String showDeveloperList(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                    HttpSession session,
                                     ModelMap modelMap) {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE, TEAM_LEAD);
 
-        User sessionUser = (User) session.getAttribute("SESSION_USER");
-
-        List<User> developerList = userService.findAllUserByDesignation(sessionUser, DEVELOPER, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<User> developerList = userService.findAllUserByDesignation(DEVELOPER, pageable);
 
         modelMap.addAttribute("userList", developerList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countUserByDesignation(sessionUser, DEVELOPER)));
+        modelMap.addAttribute("pageNumber",
+                userHelper.getTotalPageNumber((int) userService.countUserByDesignation(DEVELOPER)));
 
         return USER_LIST_PAGE;
     }
 
     @RequestMapping(value = "/testerList", method = RequestMethod.GET)
     public String showTesterList(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                 HttpSession session,
                                  ModelMap modelMap) {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE, TEAM_LEAD);
 
-        User sessionUser = (User) session.getAttribute("SESSION_USER");
-
-        List<User> testerList = userService.findAllUserByDesignation(sessionUser, TESTER, PageRequest.of(page - 1, PAGE_SIZE));
+        Pageable pageable = PageRequest.of(page - 1, ITEMS_PER_PAGE);
+        List<User> testerList = userService.findAllUserByDesignation(TESTER, pageable);
 
         modelMap.addAttribute("userList", testerList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countUserByDesignation(sessionUser, TESTER)));
+        modelMap.addAttribute("pageNumber",
+                userHelper.getTotalPageNumber((int) userService.countUserByDesignation(TESTER)));
 
         return USER_LIST_PAGE;
     }

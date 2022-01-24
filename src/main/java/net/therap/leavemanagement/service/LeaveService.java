@@ -3,10 +3,12 @@ package net.therap.leavemanagement.service;
 import net.therap.leavemanagement.dao.LeaveRepo;
 import net.therap.leavemanagement.domain.Leave;
 import net.therap.leavemanagement.domain.User;
+import net.therap.leavemanagement.util.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.WebUtils;
 
 import java.util.List;
 
@@ -41,7 +43,9 @@ public class LeaveService {
         return leaveRepo.findPendingLeavesOfUser(userId, pageable);
     }
 
-    public List<Leave> findAllProceededLeaves(User sessionUser, Pageable pageable) {
+    public List<Leave> findAllProceededLeaves(Pageable pageable) {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
+
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
                 return leaveRepo.findAllProceededLeaves(pageable);
@@ -52,7 +56,9 @@ public class LeaveService {
         }
     }
 
-    public List<Leave> findAllPendingLeaves(User sessionUser, Pageable pageable) {
+    public List<Leave> findAllPendingLeaves(Pageable pageable) {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
+
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
                 return leaveRepo.findAllPendingLeaves(pageable);
@@ -71,7 +77,9 @@ public class LeaveService {
         return leaveRepo.countPendingLeavesOfUser(userId);
     }
 
-    public long countAllProceededLeaves(User sessionUser) {
+    public long countAllProceededLeaves() {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
+
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
                 return leaveRepo.countAllProceededLeaves();
@@ -82,7 +90,9 @@ public class LeaveService {
         }
     }
 
-    public long countAllPendingLeaves(User sessionUser) {
+    public long countAllPendingLeaves() {
+        User sessionUser = (User) WebUtils.getSessionAttribute(ServletUtil.getHttpServletRequest(), "SESSION_USER");
+
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
                 return leaveRepo.countAllPendingLeaves();
