@@ -1,6 +1,7 @@
 package net.therap.leavemanagement.service;
 
 import net.therap.leavemanagement.dao.UserRepo;
+import net.therap.leavemanagement.domain.Designation;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.util.HashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,57 +46,35 @@ public class UserService {
         return userRepo.findByUsername(username);
     }
 
-    public List<User> findAllTeamLead() {
-        return userRepo.findAllTeamLead();
+    public List<User> findAllTeamLead(Designation designation) {
+        return userRepo.findAllByDesignation(designation);
     }
 
-    public List<User> findAllTeamLead(Pageable pageable) {
-        return userRepo.findAllTeamLead(pageable);
+    public List<User> findAllTeamLead(Designation designation, Pageable pageable) {
+        return userRepo.findAllByDesignation(designation, pageable);
     }
 
-    public long countTeamLead() {
-        return userRepo.countTeamLead();
-    }
-
-    public List<User> findAllDeveloper(User sessionUser, Pageable pageable) {
+    public List<User> findAllUserByDesignation(User sessionUser, Designation designation, Pageable pageable) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userRepo.findAllDeveloper(pageable);
+                return userRepo.findAllByDesignation(designation, pageable);
             case TEAM_LEAD:
-                return userManagementService.findAllDeveloperUnderTeamLead(sessionUser.getId(), pageable);
+                return userManagementService.findAllUserByDesignationUnderTeamLead(sessionUser.getId(), designation, pageable);
             default:
                 return null;
         }
     }
 
-    public long countDeveloper(User sessionUser) {
-        switch (sessionUser.getDesignation()) {
-            case HR_EXECUTIVE:
-                return userRepo.countDeveloper();
-            case TEAM_LEAD:
-                return userManagementService.countDeveloperUnderTeamLead(sessionUser.getId());
-            default:
-                return 0;
-        }
+    public long countTeamLead(Designation designation) {
+        return userRepo.countByDesignation(designation);
     }
 
-    public List<User> findAllTester(User sessionUser, Pageable pageable) {
+    public long countUserByDesignation(User sessionUser, Designation designation) {
         switch (sessionUser.getDesignation()) {
             case HR_EXECUTIVE:
-                return userRepo.findAllTester(pageable);
+                return userRepo.countByDesignation(designation);
             case TEAM_LEAD:
-                return userManagementService.findAllTesterUnderTeamLead(sessionUser.getId(), pageable);
-            default:
-                return null;
-        }
-    }
-
-    public long countTester(User sessionUser) {
-        switch (sessionUser.getDesignation()) {
-            case HR_EXECUTIVE:
-                return userRepo.countTester();
-            case TEAM_LEAD:
-                return userManagementService.countTesterUnderTeamLead(sessionUser.getId());
+                return userManagementService.countUserByDesignationUnderTeamLead(sessionUser.getId(), designation);
             default:
                 return 0;
         }

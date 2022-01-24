@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
+import static net.therap.leavemanagement.domain.Designation.*;
 import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
@@ -37,9 +38,9 @@ public class UserHelper {
     public void setupDataIfTeamLead(User user, ModelMap modelMap) {
         if (user.isTeamLead()) {
             modelMap.addAttribute("developerList",
-                    userManagementService.findAllDeveloperUnderTeamLead(user.getId()));
+                    userManagementService.findAllUserByDesignationUnderTeamLead(user.getId(), DEVELOPER));
             modelMap.addAttribute("testerList",
-                    userManagementService.findAllTesterUnderTeamLead(user.getId()));
+                    userManagementService.findAllUserByDesignationUnderTeamLead(user.getId(), TESTER));
         }
     }
 
@@ -66,7 +67,7 @@ public class UserHelper {
     }
 
     public void setDataForUserSaveForm(ModelMap modelMap) {
-        modelMap.addAttribute("teamLeadList", userService.findAllTeamLead());
+        modelMap.addAttribute("teamLeadList", userService.findAllTeamLead(TEAM_LEAD));
         modelMap.addAttribute("designationList", Arrays.asList(Designation.values()));
     }
 

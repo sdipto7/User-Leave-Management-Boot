@@ -15,72 +15,97 @@ import java.util.List;
 @Repository
 public interface LeaveRepo extends CrudRepository<Leave, Long> {
 
-    Leave findById(long id);
+    String findAllLeavesOfUserQuery = "SELECT l FROM Leave l WHERE l.user.id = :userId ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l WHERE l.user.id = :userId ORDER BY l.id")
-    List<Leave> findAllLeavesOfUser(long userId);
-
-    @Query("SELECT l FROM Leave l WHERE l.user.id = :userId AND " +
+    String findProceededLeavesOfUserQuery = "SELECT l FROM Leave l WHERE l.user.id = :userId AND " +
             "(l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
-            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD') ORDER BY l.id")
-    List<Leave> findProceededLeavesOfUser(long userId, Pageable pageable);
+            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD') ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l WHERE l.user.id = :userId AND " +
-            "(l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE') ORDER BY l.id")
-    List<Leave> findPendingLeavesOfUser(long userId);
+    String findPendingLeavesOfUserQuery = "SELECT l FROM Leave l WHERE l.user.id = :userId AND " +
+            "(l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE') ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l WHERE l.user.id = :userId AND " +
-            "(l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE') ORDER BY l.id")
-    List<Leave> findPendingLeavesOfUser(long userId, Pageable pageable);
-
-    @Query("SELECT l FROM Leave l " +
+    String findAllProceededLeavesUnderTeamLeadQuery = "SELECT l FROM Leave l " +
             "WHERE (l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
             "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD') AND EXISTS (SELECT 1 FROM UserManagement um WHERE " +
-            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId) ORDER BY l.id")
-    List<Leave> findAllProceededLeavesUnderTeamLead(long teamLeadId, Pageable pageable);
+            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId) ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l " +
+    String findAllPendingLeavesUnderTeamLeadQuery = "SELECT l FROM Leave l " +
             "WHERE (l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE' OR l.leaveStatus = 'PENDING_BY_TEAM_LEAD') AND " +
             "EXISTS (SELECT 1 FROM UserManagement um WHERE " +
-            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId) ORDER BY l.id")
-    List<Leave> findAllPendingLeavesUnderTeamLead(long teamLeadId, Pageable pageable);
+            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId) ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l WHERE " +
+    String findAllProceededLeavesQuery = "SELECT l FROM Leave l WHERE " +
             "l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
-            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD' ORDER BY l.id")
-    List<Leave> findAllProceededLeaves(Pageable pageable);
+            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD' ORDER BY l.id";
 
-    @Query("SELECT l FROM Leave l WHERE " +
-            "l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE' ORDER BY l.id")
-    List<Leave> findAllPendingLeaves(Pageable pageable);
+    String findAllPendingLeavesQuery = "SELECT l FROM Leave l WHERE " +
+            "l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE' ORDER BY l.id";
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE l.user.id = :userId AND " +
+    String countProceededLeavesOfUserQuery = "SELECT COUNT(l) FROM Leave l WHERE l.user.id = :userId AND " +
             "(l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
-            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD')")
-    long countProceededLeavesOfUser(long userId);
+            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD')";
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE l.user.id = :userId AND " +
-            "(l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE')")
-    long countPendingLeavesOfUser(long userId);
+    String countPendingLeavesOfUserQuery = "SELECT COUNT(l) FROM Leave l WHERE l.user.id = :userId AND " +
+            "(l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE')";
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE " +
+    String countAllProceededLeavesUnderTeamLeadQuery = "SELECT COUNT(l) FROM Leave l WHERE " +
             "(l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
             "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD') AND EXISTS (SELECT 1 FROM UserManagement um WHERE " +
-            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId)")
-    long countAllProceededLeavesUnderTeamLead(long teamLeadId);
+            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId)";
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE " +
+    String countAllPendingLeavesUnderTeamLeadQuery = "SELECT COUNT(l) FROM Leave l WHERE " +
             "(l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE' OR l.leaveStatus = 'PENDING_BY_TEAM_LEAD') AND " +
             "EXISTS (SELECT 1 FROM UserManagement um WHERE " +
-            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId)")
+            "l.user.id = um.user.id AND um.teamLead.id = :teamLeadId)";
+
+    String countAllProceededLeavesQuery = "SELECT COUNT(l) FROM Leave l WHERE " +
+            "l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
+            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD'";
+
+    String countAllPendingLeavesQuery = "SELECT COUNT(l) FROM Leave l WHERE " +
+            "l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE'";
+
+    Leave findById(long id);
+
+    @Query(findAllLeavesOfUserQuery)
+    List<Leave> findAllLeavesOfUser(long userId);
+
+    @Query(findProceededLeavesOfUserQuery)
+    List<Leave> findProceededLeavesOfUser(long userId, Pageable pageable);
+
+    @Query(findPendingLeavesOfUserQuery)
+    List<Leave> findPendingLeavesOfUser(long userId);
+
+    @Query(findPendingLeavesOfUserQuery)
+    List<Leave> findPendingLeavesOfUser(long userId, Pageable pageable);
+
+    @Query(findAllProceededLeavesUnderTeamLeadQuery)
+    List<Leave> findAllProceededLeavesUnderTeamLead(long teamLeadId, Pageable pageable);
+
+    @Query(findAllPendingLeavesUnderTeamLeadQuery)
+    List<Leave> findAllPendingLeavesUnderTeamLead(long teamLeadId, Pageable pageable);
+
+    @Query(findAllProceededLeavesQuery)
+    List<Leave> findAllProceededLeaves(Pageable pageable);
+
+    @Query(findAllPendingLeavesQuery)
+    List<Leave> findAllPendingLeaves(Pageable pageable);
+
+    @Query(countProceededLeavesOfUserQuery)
+    long countProceededLeavesOfUser(long userId);
+
+    @Query(countPendingLeavesOfUserQuery)
+    long countPendingLeavesOfUser(long userId);
+
+    @Query(countAllProceededLeavesUnderTeamLeadQuery)
+    long countAllProceededLeavesUnderTeamLead(long teamLeadId);
+
+    @Query(countAllPendingLeavesUnderTeamLeadQuery)
     long countAllPendingLeavesUnderTeamLead(long teamLeadId);
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE " +
-            "l.leaveStatus = 'APPROVED_BY_HR_EXECUTIVE' OR l.leaveStatus = 'DENIED_BY_HR_EXECUTIVE' " +
-            "OR l.leaveStatus = 'DENIED_BY_TEAM_LEAD'")
+    @Query(countAllProceededLeavesQuery)
     long countAllProceededLeaves();
 
-    @Query("SELECT COUNT(l) FROM Leave l WHERE " +
-            "l.leaveStatus = 'PENDING_BY_TEAM_LEAD' OR l.leaveStatus = 'PENDING_BY_HR_EXECUTIVE'")
+    @Query(countAllPendingLeavesQuery)
     long countAllPendingLeaves();
 }

@@ -30,8 +30,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static net.therap.leavemanagement.controller.UserController.*;
-import static net.therap.leavemanagement.domain.Designation.HR_EXECUTIVE;
-import static net.therap.leavemanagement.domain.Designation.TEAM_LEAD;
+import static net.therap.leavemanagement.domain.Designation.*;
 import static net.therap.leavemanagement.util.Constant.PAGE_SIZE;
 
 /**
@@ -118,10 +117,10 @@ public class UserController {
 
         authorizationHelper.checkAccess(HR_EXECUTIVE);
 
-        List<User> teamLeadList = userService.findAllTeamLead(PageRequest.of(page - 1, PAGE_SIZE));
+        List<User> teamLeadList = userService.findAllTeamLead(TEAM_LEAD, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", teamLeadList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTeamLead()));
+        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTeamLead(TEAM_LEAD)));
 
         return USER_LIST_PAGE;
     }
@@ -135,10 +134,10 @@ public class UserController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<User> developerList = userService.findAllDeveloper(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
+        List<User> developerList = userService.findAllUserByDesignation(sessionUser, DEVELOPER, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", developerList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countDeveloper(sessionUser)));
+        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countUserByDesignation(sessionUser, DEVELOPER)));
 
         return USER_LIST_PAGE;
     }
@@ -152,10 +151,10 @@ public class UserController {
 
         User sessionUser = (User) session.getAttribute("SESSION_USER");
 
-        List<User> testerList = userService.findAllTester(sessionUser, PageRequest.of(page - 1, PAGE_SIZE));
+        List<User> testerList = userService.findAllUserByDesignation(sessionUser, TESTER, PageRequest.of(page - 1, PAGE_SIZE));
 
         modelMap.addAttribute("userList", testerList);
-        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countTester(sessionUser)));
+        modelMap.addAttribute("pageNumber", userHelper.getTotalPageNumber((int) userService.countUserByDesignation(sessionUser, TESTER)));
 
         return USER_LIST_PAGE;
     }

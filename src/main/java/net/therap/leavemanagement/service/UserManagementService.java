@@ -1,6 +1,7 @@
 package net.therap.leavemanagement.service;
 
 import net.therap.leavemanagement.dao.UserManagementRepo;
+import net.therap.leavemanagement.domain.Designation;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.domain.UserManagement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,33 +26,16 @@ public class UserManagementService {
         return userManagementRepo.findTeamLeadByUserId(userId);
     }
 
-    public List<User> findAllDeveloperUnderTeamLead(long teamLeadId) {
-        return userManagementRepo.findAllDeveloperUnderTeamLead(teamLeadId);
+    public List<User> findAllUserByDesignationUnderTeamLead(long teamLeadId, Designation designation) {
+        return userManagementRepo.findAllUserByDesignationUnderTeamLead(teamLeadId, designation);
     }
 
-    public List<User> findAllDeveloperUnderTeamLead(long teamLeadId, Pageable pageable) {
-        return userManagementRepo.findAllDeveloperUnderTeamLead(teamLeadId, pageable);
+    public List<User> findAllUserByDesignationUnderTeamLead(long teamLeadId, Designation designation, Pageable pageable) {
+        return userManagementRepo.findAllUserByDesignationUnderTeamLead(teamLeadId, designation, pageable);
     }
 
-    public long countDeveloperUnderTeamLead(long teamLeadId) {
-        return userManagementRepo.countDeveloperUnderTeamLead(teamLeadId);
-    }
-
-    public List<User> findAllTesterUnderTeamLead(long teamLeadId) {
-        return userManagementRepo.findAllTesterUnderTeamLead(teamLeadId);
-    }
-
-    public List<User> findAllTesterUnderTeamLead(long teamLeadId, Pageable pageable) {
-        return userManagementRepo.findAllTesterUnderTeamLead(teamLeadId, pageable);
-    }
-
-    public long countTesterUnderTeamLead(long teamLeadId) {
-        return userManagementRepo.countTesterUnderTeamLead(teamLeadId);
-    }
-
-    @Transactional
-    public void saveOrUpdate(UserManagement userManagement) {
-        userManagementRepo.save(userManagement);
+    public long countUserByDesignationUnderTeamLead(long teamLeadId, Designation designation) {
+        return userManagementRepo.countUserByDesignationUnderTeamLead(teamLeadId, designation);
     }
 
     @Transactional
@@ -76,11 +60,6 @@ public class UserManagementService {
         userManagement.setTeamLead(teamLead);
 
         userManagementRepo.save(userManagement);
-    }
-
-    @Transactional
-    public void delete(UserManagement userManagement) {
-        userManagementRepo.delete(userManagement);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package net.therap.leavemanagement.dao;
 
+import net.therap.leavemanagement.domain.Designation;
 import net.therap.leavemanagement.domain.User;
 import net.therap.leavemanagement.domain.UserManagement;
 import org.springframework.data.domain.Pageable;
@@ -16,34 +17,32 @@ import java.util.List;
 @Repository
 public interface UserManagementRepo extends CrudRepository<UserManagement, Long> {
 
-    @Query("SELECT um FROM UserManagement um WHERE um.user.id = :userId")
+    String findByUserIdQuery = "SELECT um FROM UserManagement um WHERE um.user.id = :userId";
+
+    String findAllByTeamLeadIdQuery = "SELECT um FROM UserManagement um WHERE um.teamLead.id = :teamLeadId";
+
+    String findTeamLeadByUserIdQuery = "SELECT um.teamLead FROM UserManagement um WHERE um.user.id = :userId";
+
+    String findAllUserByDesignationUnderTeamLeadQuery = "SELECT um.user FROM UserManagement um " +
+            "WHERE um.teamLead.id = :teamLeadId AND um.user.designation = :designation ORDER BY um.id";
+
+    String countUserByDesignationUnderTeamLeadQuery = "SELECT COUNT(um) FROM UserManagement um WHERE um.teamLead.id = :teamLeadId AND um.user.designation = :designation";
+
+    @Query(findByUserIdQuery)
     UserManagement findByUserId(long userId);
 
-    @Query("SELECT um FROM UserManagement um WHERE um.teamLead.id = :teamLeadId")
+    @Query(findAllByTeamLeadIdQuery)
     List<UserManagement> findAllByTeamLeadId(long teamLeadId);
 
-    @Query("SELECT um.teamLead FROM UserManagement um WHERE um.user.id = :userId")
+    @Query(findTeamLeadByUserIdQuery)
     User findTeamLeadByUserId(long userId);
 
-    @Query("SELECT um.user FROM UserManagement um " +
-            "WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'DEVELOPER' ORDER BY um.id")
-    List<User> findAllDeveloperUnderTeamLead(long teamLeadId);
+    @Query(findAllUserByDesignationUnderTeamLeadQuery)
+    List<User> findAllUserByDesignationUnderTeamLead(long teamLeadId, Designation designation);
 
-    @Query("SELECT um.user FROM UserManagement um " +
-            "WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'DEVELOPER' ORDER BY um.id")
-    List<User> findAllDeveloperUnderTeamLead(long teamLeadId, Pageable pageable);
+    @Query(findAllUserByDesignationUnderTeamLeadQuery)
+    List<User> findAllUserByDesignationUnderTeamLead(long teamLeadId, Designation designation, Pageable pageable);
 
-    @Query("SELECT COUNT(um) FROM UserManagement um WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'DEVELOPER'")
-    long countDeveloperUnderTeamLead(long teamLeadId);
-
-    @Query("SELECT um.user FROM UserManagement um " +
-            "WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'TESTER' ORDER BY um.id")
-    List<User> findAllTesterUnderTeamLead(long teamLeadId);
-
-    @Query("SELECT um.user FROM UserManagement um " +
-            "WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'TESTER' ORDER BY um.id")
-    List<User> findAllTesterUnderTeamLead(long teamLeadId, Pageable pageable);
-
-    @Query("SELECT COUNT(um) FROM UserManagement um WHERE um.teamLead.id = :teamLeadId AND um.user.designation = 'TESTER'")
-    long countTesterUnderTeamLead(long teamLeadId);
+    @Query(countUserByDesignationUnderTeamLeadQuery)
+    long countUserByDesignationUnderTeamLead(long teamLeadId, Designation designation);
 }
